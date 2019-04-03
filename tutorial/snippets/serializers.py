@@ -2,13 +2,10 @@ from rest_framework import serializers
 from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
-class SnippetSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    title = serializers.CharField(required=False, allow_blank=True, max_length=100)
-    code = serializers.CharField(style={'base_template': 'textarea.html'})
-    linenos = serializers.BooleanField(required=False)
-    language = serializers.ChoiceField(choices=LANGUAGE_CHOICES, default='python')
-    style = serializers.ChoiceField(choices=STYLE_CHOICES, default='friendly')
+class SnippetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Snippet
+        fields = ('id', 'title', 'code', 'linenos','language', 'style')
 
     def create(self, validated_data):
         """
@@ -28,17 +25,9 @@ class SnippetSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-python manage.py shell
-from snippets.models import Snippet
+
 from snippets.serializers import SnippetSerializer
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
 
-snippet = Snippet(code='foo = "bar"\n')
-snippet.save()
 
-snippet = Snippet(code='print("hello, world")\n')
-snippet.save()
-
-serializer = SnippetSerializer(snippet)
-serializer.data
+serializer = SnippetSerializer()
+print(repr(serializer))
