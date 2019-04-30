@@ -4,10 +4,11 @@ from django.contrib.auth.models import User
 
 class SnippetSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
+    highlight = serializers.HyperlinkedIdentityField(view_name='snippet-highlight', format='html')
 
     class Meta:
         model = Snippet
-        fields = ('owner', 'id', 'title', 'code', 'linenos','language', 'style')
+        fields = ('url', 'id', 'highlight', 'owner', 'id', 'title', 'code', 'linenos','language', 'style')
 
     def create(self, validated_data):
 
@@ -30,4 +31,4 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'snippets')
+        fields = ('url','id', 'username', 'snippets')
